@@ -30,7 +30,8 @@ public class SLR {
 	class Model {
 		private double slope;
 		private double yint;
-	
+		private double rsquared;
+		
 		public Model (){
 		}
 		public Model (double slope, double yint) {
@@ -43,6 +44,21 @@ public class SLR {
 		}
 		public double eval (double x) {
 			return this.yint + this.slope * x;
+		}
+		public String equation () {
+			return "y = " + this.yint + " + (" + this.slope + ")x";
+		}
+		public double rsquared (List<Pair> data, double meany) {
+			if (this.rsquared == 0.0) {
+				double residuals = 0;
+				double sumofsqrs = 0;
+				for (Pair i : data) {
+					residuals += Math.pow((i.y - eval(i.x)), 2);
+					sumofsqrs += Math.pow((i.y - meany), 2);
+				}	
+				this.rsquared = 1 - (residuals/sumofsqrs);
+			}
+			return this.rsquared;
 		}
 	}
 	
@@ -78,6 +94,7 @@ public class SLR {
 		covariance();
 		slope();
 		m.set(this.slope, this.meany - (this.slope * this.meanx)); //approximated slope and y-intercept
+		m.rsquared(this.dataset, this.meany);
 	}
 	public static void main(String[] args) { 
 		SLR slr = new SLR();
@@ -94,8 +111,8 @@ public class SLR {
 				slr.n++;
 			}
 			slr.train(m);		// train by performing stats calculations for linear regression formula
-			System.out.println("meanx, meany, variance, covariance, model.c0, model.c1\n" + slr.meanx + " " + slr.meany + " " + slr.variance + " " + slr.covariance + " " + m.yint + " " + m.slope);
-			System.out.println("Evaluating sqft of 2371: " + m.eval(2371));
+			System.out.println("Results\n\nmeanx: \t\t\t" + slr.meanx + "\nmeany: \t\t\t" + slr.meany + "\nvariance: \t\t" + slr.variance +"\ncovariance: \t\t" + slr.covariance + "\nmodel.c0: \t\t" + m.yint +"\nmodel.c1: \t\t" + m.slope + "\nmodel.rsquared: \t" + m.rsquared + "\nequation: \t\t" + m.equation());
+			System.out.printf("\nEvaluating property of sqft of 2371ft: $%.2f\n", m.eval(2371));
 			sc.close();
 		} catch (FileNotFoundException err) {
 			System.err.println(err);
