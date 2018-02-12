@@ -100,8 +100,8 @@ public class SLR {
 		SLR slr = new SLR();
 		Model m = slr.new Model();
 		try {
-			Scanner sc = new Scanner(new File("RealEstate.csv"));
-			String[] line;
+			Scanner sc = new Scanner(new File((args.length != 0) ? args[0] : "RealEstate.csv"));
+			String[] line; 
 			double x, y;
 			while(sc.hasNextLine()) {				// read in csv, tokenize, build x,y dataset
 				line = sc.nextLine().split(",");
@@ -116,6 +116,7 @@ public class SLR {
 			sc.close();
 		} catch (FileNotFoundException err) {
 			System.err.println(err);
+			System.err.println("Usage: java -jar notsureyet.jar <filename>");
 		}
 	}
 
